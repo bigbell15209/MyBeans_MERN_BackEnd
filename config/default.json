@@ -1,0 +1,4 @@
+{
+    "mongoURI":"mongodb://localhost/MyBeans_MERN",
+    "jwtSecret":"jay"
+}
