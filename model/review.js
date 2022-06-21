@@ -11,10 +11,13 @@ const ReviewSchema = new mongoose.Schema({
 		ref: "buyer"
 	},
     rate: {
-		type: String
+		type: Number
 	},
     comment: {
 		type: String
+	},
+	dateCreated:{
+		type:Date
 	},
     lastUpdated:{
         type: Date

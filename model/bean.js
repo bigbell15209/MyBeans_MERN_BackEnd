@@ -20,6 +20,17 @@ const BeanSchema = new mongoose.Schema({
     price:{
         type:Number
     },
+    dateCreated:{
+        type: Date
+    },
+    reviews: [
+		{
+			review: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "review"
+			}
+		}
+	],
     lastUpdated:{
         type: Date
     }

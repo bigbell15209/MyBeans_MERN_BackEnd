@@ -34,6 +34,14 @@ const BuyerSchema = new mongoose.Schema({
 				ref: "review"
 			}
 		}
+	],
+	beans: [
+		{
+			review: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "bean"
+			}
+		}
 	]
 })
 

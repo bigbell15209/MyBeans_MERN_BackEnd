@@ -30,6 +30,9 @@ const VendorSchema = new mongoose.Schema({
     shopName:{
         type: String
     },
+	shopDescription:{
+		type: String
+	},
     phoneNumber:{
         type: String
     },
