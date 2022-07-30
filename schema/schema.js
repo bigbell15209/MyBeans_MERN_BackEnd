@@ -231,13 +231,13 @@ const RootQuery = new GraphQLObjectType({
 			}
 		},
 		vendors: {
-			type: new GraphQlList(VendorType),
+			type: VendorType,
 			resolve(parent, args) {
 				return Vendor.find()
 			}
 		},
 		vendors_AllShops: {
-			type: new GraphQlList(VendorType),
+			type: VendorType,
 			resolve(parent, args) {
 				return Vendor.find()
 			}
@@ -250,7 +250,7 @@ const RootQuery = new GraphQLObjectType({
 			}
 		},
 		vendors_AllBeans:{
-			type: new GraphQlList(VendorType),
+			type: VendorType,
 			resolve(parent, args) {
 				return Vendor.find()
 			}
@@ -496,135 +496,6 @@ const Mutation = new GraphQLObjectType({
 				beanInDb.price = args.price
 				 
 				return await beanInDb.save()
-			}
-		},
-		createAndSendMessage:{
-			type:MessageType,
-			args:{
-				description:{type:GraphQLString},
-				patientId: { type: new GraphQLNonNull(GraphQLString)}
-			},
-			async resolve(parent, args){
-				let message = new Message({
-					description:args.description
-				})
-				await message.save()
-
-				patientId = args.patientId
-				const patient = await Patient.findById( patientId )
-				patient.messages.push({ message })
-				await patient.save()
-
-				await message.patients.push({patient})
-				result = await message.save()
-				
-				return result
-			}
-		},
-		
-		createAndAssignVitalSign: {
-			type: VitalSignType,
-			args: {
-				bodyTemp: { type: GraphQLString },
-				heartRate: { type: GraphQLString },
-				bloodPressure: { type: GraphQLString },
-				respiratoryRate: { type: GraphQLString },
-				patientId: { type: new GraphQLNonNull(GraphQLString)}
-			},
-			async resolve(parent, args) {
-				let vitalSign = new VitalSign({
-					bodyTemp: args.bodyTemp,
-					heartRate: args.heartRate,
-					bloodPressure: args.bloodPressure,
-					respiratoryRate: args.respiratoryRate,
-				})
-				await vitalSign.save()
-
-				patientId = args.patientId
-				//const patient = await Patient.findOne({ patientId })
-				const patient = await Patient.findById( patientId)
-				patient.vitalSigns.push({ vitalSign })
-				await patient.save()
-
-				await vitalSign.patients.push({patient})
-				result = await vitalSign.save()
-				
-				return result
-			}
-		},
-		
-		
-		deleteVitalSign: {
-			type: VitalSignType,
-			args: {
-				vitalSignId: { type: new GraphQLNonNull(GraphQLString) }
-			},
-			async resolve(parent, args) {
-				const vitalSign = await VitalSign.findByIdAndDelete(args.vitalSignId)
-
-				const patients = await Patient.find({
-					"vitalSigns.vitalSign": args.vitalSignId
-				})
-
-				for (const patient of patients) {
-					;async (patient) => {
-						const result = await Patient.updateOne(
-							{ _id: patient._id },
-							{
-								$pull: {
-									vitalSigns: { vitalSign: args.vitalSignId }
-								}
-							}
-						)
-					}
-				}
-				return vitalSign
-			}
-		},
-
-		dropVitalSign: {
-			type: VitalSignType,
-			args: {
-				vitalSignId: { type: new GraphQLNonNull(GraphQLString) },
-				patientId: { type: new GraphQLNonNull(GraphQLString) }
-			},
-			async resolve(parent, args) {
-				const patient = await Patient.findOne({ userId: args.patientId })
-				await VitalSign.findByIdAndUpdate(args.vitalSignId, {
-					$pull: {
-						patients: { patient: patient._id }
-					}
-				})
-				const result = await Patient.updateOne(
-					{ userId: args.patientId },
-					{
-						$pull: {
-							vitalSigns: { vitalSign: args.vitalSignId }
-						}
-					}
-				)
-				return patient
-			}
-		},
-
-		submitSurvey: {
-			type: SurveyType,
-			args: {
-				surveyId: {type: GraphQLString },
-				answer1: { type: GraphQLString },
-				answer2: { type: GraphQLString },
-				answer3: { type: GraphQLString },
-				answer4: { type: GraphQLString }
-			},
-			async resolve(parent, args) {
-				const surveyInDb = await Survey.findById( args.surveyId )
-				
-				surveyInDb.answer1 = args.answer1
-				surveyInDb.answer2 = args.answer2
-				surveyInDb.answer3 = args.answer3
-				surveyInDb.answer4 = args.answer4
-
-				return await surveyInDb.save()
 			}
 		},
 
