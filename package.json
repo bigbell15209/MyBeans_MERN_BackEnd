@@ -1,5 +1,5 @@
 {
-  "name": "BackEnd",
+  "name": "backend",
   "version": "1.0.0",
   "description": "This will be created by Jihyeok and Eunbee",
   "main": "index.js",
@@ -12,14 +12,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/client": "^3.6.9",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.7",
     "cors": "^2.8.5",
-    "express": "^4.17.2",
+    "express": "^4.18.1",
     "express-graphql": "^0.12.0",
-    "graphql": "^16.3.0",
+    "graphql": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.1",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.19"
   }
 }

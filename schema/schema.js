@@ -15,18 +15,17 @@ const {
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
-	GraphQLFloat,
-	GraphQL
+	GraphQLFloat
 } = graphql
 
 const BeanType = new GraphQLObjectType({
-	name:"Review",
+	name:"Bean",
 	fields:()=>({
 		id:{
 			type:GraphQLString
 		},
-        origins:[{type:GraphQLString}],
-        species:[{type:GraphQLString}],
+        origins:{type:GraphQLString},
+        species:{type:GraphQLString},
         roastingLevel:{
             type:GraphQLString
         },
