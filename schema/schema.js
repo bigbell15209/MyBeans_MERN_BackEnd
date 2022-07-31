@@ -18,53 +18,6 @@ const {
 	GraphQLFloat
 } = graphql
 
-const BeanType = new GraphQLObjectType({
-	name:"Bean",
-	fields:()=>({
-		id:{
-			type:GraphQLString
-		},
-        origins:{type:GraphQLString},
-        species:{type:GraphQLString},
-        roastingLevel:{
-            type:GraphQLString
-        },
-        description:{
-            type:GraphQLString
-        },
-        price:{
-            type:GraphQLFloat
-        },
-        dateCreated:{
-            type:GraphQLString
-        },
-        lastUpdated:{
-            type:GraphQLString
-        }
-	})
-})
-
-const ReviewType = new GraphQLObjectType({
-	name:"Review",
-	fields:()=>({
-		id:{
-			type:GraphQLString
-		},
-		rate:{
-            type:GraphQLFloat
-        },
-        comment:{
-            type:GraphQLString
-        },
-		dateCreated:{
-            type:GraphQLString
-        },
-        lastUpdated:{
-            type:GraphQLString
-        }
-	})
-})
-
 const UserType = new GraphQLObjectType({
 	name: "User",
 	fields: () => ({
@@ -159,6 +112,71 @@ const VendorType = new GraphQLObjectType({
 
 	})
 })
+
+const BeanType = new GraphQLObjectType({
+	name:"Bean",
+	fields:()=>({
+		id:{
+			type:GraphQLString
+		},
+        origins:{type:GraphQLString},
+        species:{type:GraphQLString},
+        roastingLevel:{
+            type:GraphQLString
+        },
+        description:{
+            type:GraphQLString
+        },
+        price:{
+            type:GraphQLFloat
+        },
+        dateCreated:{
+            type:GraphQLString
+        },
+        lastUpdated:{
+            type:GraphQLString
+        },
+		reviews: 
+            {
+			type: new GraphQLList(ReviewType),
+			async resolve(parent, args) {
+				var reviews = []
+				for (const reviewInfo of parent.reviews) {
+					const review = await Review.findById(reviewInfo.review)
+					if (review != null) {
+						reviews.push(review)
+					}
+				}
+				return reviews
+			}
+		}
+	})
+})
+
+const ReviewType = new GraphQLObjectType({
+	name:"Review",
+	fields:()=>({
+		id:{
+			type:GraphQLString
+		},
+		rate:{
+            type:GraphQLFloat
+        },
+        comment:{
+            type:GraphQLString
+        },
+		dateCreated:{
+            type:GraphQLString
+        },
+        lastUpdated:{
+            type:GraphQLString
+        }
+	})
+})
+
+
+
+
 
 const RootQuery = new GraphQLObjectType({
 	name: "RootQueryType",
@@ -396,7 +414,7 @@ const Mutation = new GraphQLObjectType({
 
 
 		updateBuyerInfo: {
-			type: {BuyerType, UserType},
+			type: BuyerType,
 			args: {
 				userId:{type: GraphQLString },
 				password:{type: GraphQLString },

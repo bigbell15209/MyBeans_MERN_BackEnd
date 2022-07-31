@@ -1,7 +1,6 @@
-const VitalSign = require("../model/vitalSign")
 const config = require("config")
 const jwt = require("jsonwebtoken")
-const Patient = require("../model/patient")
+const Buyer = require("../model/buyer")
 
 const authenticate = (req, res, next) => {
 	var token
@@ -45,7 +44,7 @@ const authorizeAdmin = (req, res, next) => {
 	try {
 		const decoded = jwt.verify(token, config.get("jwtSecret"))
 		console.log(decoded.user.role)
-		if (decoded.user.role != "nurse") {
+		if (decoded.user.role != "vendor") {
 			return res.status(403).json({ msg: "User has no authorization" })
 		}
 
@@ -55,7 +54,7 @@ const authorizeAdmin = (req, res, next) => {
 	}
 }
 
-const authorizePatient = async (req, res, next) => {
+const authorizeBuyer = async (req, res, next) => {
 	var token
 	if (
 		req.headers.authorization &&
@@ -71,11 +70,11 @@ const authorizePatient = async (req, res, next) => {
 	try {
 		const decoded = jwt.verify(token, config.get("jwtSecret"))
 		console.log(decoded.user.role)
-		if (decoded.user.role != "patient") {
+		if (decoded.user.role != "buyer") {
 			return res.status(403).json({ msg: "User has no authorization" })
 		}
-		const patient = await Patient.findOne({ userId: decoded.user.id })
-		req.user.patientId = patient._id
+		const buyer = await Buyer.findOne({ userId: decoded.user.id })
+		req.user.buyerId = buyer._id
 
 		next()
 	} catch (err) {
@@ -83,4 +82,4 @@ const authorizePatient = async (req, res, next) => {
 	}
 }
 
-module.exports = { authenticate, authorizeAdmin, authorizePatient }
+module.exports = { authenticate, authorizeAdmin, authorizeBuyer }
